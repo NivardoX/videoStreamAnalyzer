@@ -32,6 +32,36 @@ services:
     environment:
         RABBIT_MQ_URL: 'rabbitmq:5672'
 
+  api:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/api.dockerfile
+    ports:
+      - "8000:8000"
+      - "5000:5000"
+    volumes:
+      - .:/api
+    working_dir: /api
+    depends_on:
+      - postgres
+    environment:
+        RABBIT_MQ_URL: 'rabbitmq:5672'
+        FLASK_ENV: 'development'
+
+  postgres:
+    image: 'postgres:latest'
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+    command: [ "postgres", "-c", "log_statement=all", "-c", "log_destination=stderr" ]
+
+
   consumer:
     image: python:3.8-alpine
     volumes:
@@ -44,9 +74,11 @@ services:
     depends_on:
       - rabbitmq
       - redis
+      - postgres
     environment:
         RABBIT_MQ_URL: 'rabbitmq:5672'
 
 volumes:
   rabbit-mq-data:
   redis-data:
+  pg-data:

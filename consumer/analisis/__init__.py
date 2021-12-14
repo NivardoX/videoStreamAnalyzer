@@ -13,3 +13,7 @@ AnalysisFunctions = {
     AnalysisType.DICE.name: dice,
     AnalysisType.COVER.name: cover
 }
+AnalysisMessages = {
+    AnalysisType.DICE.name: "Algum alerta foi disparado!",
+    AnalysisType.COVER.name: "A sua câmera está coberta!"
+}

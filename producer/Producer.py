@@ -38,7 +38,7 @@ class Producer:
 
                 # send to queue
                 analyze_frame.delay(self.id, self.analysis_types, frame_binary)
-                print('.')
+                print('.',end=' ')
                 time.sleep(0.5)
 
             except Exception as e:
