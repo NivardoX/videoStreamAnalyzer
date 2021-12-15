@@ -9,9 +9,7 @@ from services import camera_service
 @token_required
 def get_cameras(current_user):
     cameras = camera_service.get_cameras_by_user_id(current_user.id)
-    return jsonify({
-        'cameras':[
+    return jsonify([
             camera.as_dict() for camera in cameras
-        ]
-    })
+        ])
 

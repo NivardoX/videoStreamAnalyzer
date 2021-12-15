@@ -47,6 +47,7 @@ services:
     environment:
         RABBIT_MQ_URL: 'rabbitmq:5672'
         FLASK_ENV: 'development'
+        DATABSE_URL: 'postgresql://postgres:postgres@postgres/stream_analyzer_db'
 
   postgres:
     image: 'postgres:latest'
@@ -77,6 +78,8 @@ services:
       - postgres
     environment:
         RABBIT_MQ_URL: 'rabbitmq:5672'
+        DATABSE_URL: 'postgresql://postgres:postgres@postgres/stream_analyzer_db'
+
 
 volumes:
   rabbit-mq-data:

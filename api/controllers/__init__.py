@@ -5,7 +5,6 @@ import jwt
 from app import flask_app
 from models.user import User
 
-
 @flask_app.route("/")
 def heartbeat():
     return "beat"

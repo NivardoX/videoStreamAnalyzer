@@ -9,8 +9,7 @@ from services import alert_service
 @token_required
 def get_alerts(current_user):
     alerts = alert_service.get_alerts_by_user_id(current_user.id)
-    return jsonify({
-        'alerts': [
-            alert.as_dict() for alert in alerts
-        ]
-    })
+    return jsonify([
+        alert.as_dict() for alert in alerts
+    ]
+    )

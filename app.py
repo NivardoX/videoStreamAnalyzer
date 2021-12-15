@@ -4,7 +4,10 @@ from celery import Celery
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from settings import RABBIT_MQ_URL, DATABSE_DEFAULT_URL, DATABSE_URL
+from sqlalchemy.orm import DeclarativeMeta
+
+from settings import RABBIT_MQ_URL, DATABSE_URL
+from flask_cors import CORS
 
 
 def make_celery(app):
@@ -49,6 +52,7 @@ class AlchemyEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
 
 
+cors = CORS(flask_app, resources={r"*": {"origins": "*"}})
 db = SQLAlchemy(flask_app)
 migrate = Migrate(flask_app, db)
 celery = make_celery(flask_app)

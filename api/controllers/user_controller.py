@@ -14,14 +14,17 @@ def get_current_user(current_user):
 
 @flask_app.route('/login', methods=['POST'])
 def login():
-    user = user_service.login(request.json)
-    if user is None:
-        return "Unauthorized", 401
+    try:
+        user = user_service.login(request.json)
+        if user is None:
+            return "Unauthorized", 401
 
-    data = user.as_dict()
-    data['token'] = user.generate_token()
-    return jsonify(data)
-
+        data = user.as_dict()
+        data['token'] = user.generate_token()
+        return jsonify(data)
+    except Exception as e:
+        print(e)
+        return {'err':str(e)},400
 
 @flask_app.route('/user', methods=['POST'])
 def create_user():
