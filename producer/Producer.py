@@ -20,14 +20,16 @@ def convert_frame_to_bin(frame):
 
 
 class Producer:
-    def __init__(self, id, url, analysis_types=tuple([AnalysisType.DICE])):
+    def __init__(self, id, url, total_images = 5000,analysis_types=tuple([AnalysisType.DICE])):
         self.id = id
         self.url = url
         self.analysis_types = [analysis_type.name for analysis_type in analysis_types]
+        self.counter = 0
+        self.image_count = total_images
 
     def start(self):
         streamer = ThreadedCamera(self.url)
-        while True:
+        while True and self.counter < self.image_count:
             try:
                 frame = streamer.grab_frame()
                 if frame is None:
@@ -37,10 +39,12 @@ class Producer:
                 frame_binary = convert_frame_to_bin(resized_frame)
 
                 # send to queue
+                print(self.counter)
                 analyze_frame.delay(self.id, self.analysis_types, frame_binary)
-                print('.', end=' ')
-                time.sleep(0.5)
-
+                time.sleep(0.033333)
+                self.counter += 1
             except Exception as e:
                 print("ERROR WHILE FETCHING FRAME ", e)
                 cap = cv2.VideoCapture(self.url)
+
+        print(f"FINISHED WITH {self.counter}")

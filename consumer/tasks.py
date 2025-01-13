@@ -13,10 +13,13 @@ from consumer.analisis import AnalysisFunctions
 @celery.task
 def analyze_frame(id: str, analyses: List[str], frame: str):
     image_64_decoded = base64.decodebytes(frame.encode())
+    print(datetime.datetime.now())
 
     for analysis in analyses:
+        start = datetime.datetime.now()
         if AnalysisFunctions[analysis](image_64_decoded):
-
+            end = datetime.datetime.now()
+            print((end-start).seconds)
             try:
                 services.alert_service.create_alert({
                     'id': str(uuid.uuid4()),

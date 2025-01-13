@@ -10,7 +10,7 @@ with open(ROOT_DIR / '.cameras_config.json', 'r') as f:
 RABBIT_MQ_DEFAULT_URL = 'localhost:5672'
 RABBIT_MQ_URL = os.environ.get("RABBIT_MQ_URL", RABBIT_MQ_DEFAULT_URL)
 
-REDIS_DEFAULT_URL = 'localhost:6379'
+REDIS_DEFAULT_URL = 'localhost:6380'
 REDIS_URL = os.environ.get("REDIS_URL", REDIS_DEFAULT_URL)
 
 DATABSE_DEFAULT_URL = 'postgresql://postgres:postgres@127.0.0.1/stream_analyzer_db'

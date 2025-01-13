@@ -4,8 +4,8 @@ from producer.Producer import Producer
 from settings import CAMERAS
 
 
-def produce(camera):
-    producer = Producer(camera['id'], camera['url'])
+def produce(_camera):
+    producer = Producer(_camera['id'], _camera['url'])
     producer.start()
 
 
