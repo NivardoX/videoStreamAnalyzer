@@ -1,15 +1,49 @@
+
+import argparse
 from threading import Thread
+from producer.Producer import Producer, MockedProducer
 
-from producer.Producer import Producer
-from settings import CAMERAS
-
-
-def produce(_camera):
-    producer = Producer(_camera['id'], _camera['url'])
+def produce(camera):
+    """
+    This function uses the standard Producer.
+    """
+    producer = Producer(camera['id'], camera['url'])
     producer.start()
 
+def produce_mocked(camera, use_celery=True, total_images=200):
+    """
+    This function uses the MockedProducer.
+    """
+    producer = MockedProducer(
+        camera['id'],
+        camera['url'],
+        use_celery=use_celery,
+        total_images=total_images
+    )
+    producer.start()
 
 if __name__ == '__main__':
-    for camera in CAMERAS:
-        thread = Thread(target=produce, args=[camera])
+    # Create an argument parser
+    parser = argparse.ArgumentParser(description="Script to launch producers for cameras.")
+
+    # Example arguments:
+    parser.add_argument('--cameras', type=int, default=3,
+                        help="How cameras will be used to produce.")
+    parser.add_argument('--use-celery', action='store_true',
+                        help="If using the mocked producer, enable Celery for tasks.")
+    parser.add_argument('--total-images', type=int, default=200,
+                        help="How many frames to produce for each camera (mocked producer only).")
+
+    # Parse command line arguments
+    args = parser.parse_args()
+
+    # Loop over cameras, start a thread for each
+    for camera in range(args.cameras):
+        camera_info = {"id": f"Mock{camera}", "url": None}
+        thread = Thread(
+            target=produce_mocked,
+            args=(camera_info, args.use_celery, args.total_images)
+        )
+
+        # Start the producer thread
         thread.start()
