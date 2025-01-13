@@ -1,5 +1,7 @@
 import base64
+import datetime
 import time
+import uuid
 from typing import List
 
 import cv2
@@ -71,6 +73,7 @@ class MockedProducer:
             fps: float = 30,
             analysis_types=None,
             use_celery=True,
+            test_id=str(uuid.uuid4()),
 
     ):
         """
@@ -84,6 +87,7 @@ class MockedProducer:
 
         self.id = producer_id
         self.fps = fps
+        self.test_id = test_id
         self.total_images = total_images
         self.use_celery = use_celery
         # Convert enum entries to their names (or keep them as Enums if you prefer)
@@ -109,6 +113,7 @@ class MockedProducer:
 
         while self.counter < self.total_images:
             frame_start_time = time.time()
+            frame_start_datetime = datetime.datetime.now()
 
             try:
                 # Mock a frame (instead of capturing from a camera)
@@ -124,9 +129,9 @@ class MockedProducer:
                 # print(f"[Producer {self.id}] Producing frame #{self.counter}")
 
                 if self.use_celery:
-                    analyze_frame.delay(self.id, self.analysis_types, frame_binary)
+                    analyze_frame.delay(self.id, self.analysis_types, frame_binary,self.test_id,frame_start_datetime.timestamp())
                 else:
-                    analyze_frame(self.id, self.analysis_types, frame_binary)
+                    analyze_frame(self.id, self.analysis_types, frame_binary,self.test_id,frame_start_datetime.timestamp())
 
                 # Enforce fixed FPS
                 time.sleep(self.frame_interval)

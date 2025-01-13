@@ -3,27 +3,24 @@ import datetime
 import uuid
 from typing import List
 
+from billiard.process import current_process
+from celery.signals import worker_shutting_down
+
 import services.alert_service
-from consumer import ALERTS_PATH
+from consumer import ALERTS_PATH, TIMINGS_PATH
 from app import celery, db
 
 from consumer.analisis import AnalysisFunctions
 
-
+timings = {}
 @celery.task
-def analyze_frame(id: str, analyses: List[str], frame: str):
+def analyze_frame(id: str, analyses: List[str], frame: str, test_id: str,task_created:float) -> None:
     image_64_decoded = base64.decodebytes(frame.encode())
-    print(datetime.datetime.now())
-
     for analysis in analyses:
-        start = datetime.datetime.now()
         for i in range(1_000_000):
             pass
-        print("Loop took ",datetime.datetime.now() - start)
 
         if AnalysisFunctions[analysis](image_64_decoded):
-            end = datetime.datetime.now()
-            print((end-start).seconds)
             try:
                 services.camera_service.create_camera_if_not_exists(id, "camera" + str(id))
                 services.alert_service.create_alert({
@@ -41,4 +38,9 @@ def analyze_frame(id: str, analyses: List[str], frame: str):
                 print(e)
                 db.session.rollback()
 
+    path = TIMINGS_PATH / test_id
+
+    path.mkdir(parents=True, exist_ok=True)
+    with open(path / f"{str(current_process().index)}.txt","a") as f:
+        f.write(f"{(datetime.datetime.now() - datetime.datetime.fromtimestamp(task_created)).microseconds}\n")
     return frame

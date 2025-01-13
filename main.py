@@ -10,7 +10,7 @@ def produce(camera):
     producer = Producer(camera['id'], camera['url'])
     producer.start()
 
-def produce_mocked(camera, use_celery=True, total_images=200):
+def produce_mocked(camera, test_id,use_celery=True, total_images=200):
     """
     This function uses the MockedProducer.
     """
@@ -18,7 +18,8 @@ def produce_mocked(camera, use_celery=True, total_images=200):
         camera['id'],
         camera['url'],
         use_celery=use_celery,
-        total_images=total_images
+        total_images=total_images,
+        test_id=test_id,
     )
     producer.start()
 
@@ -33,6 +34,8 @@ if __name__ == '__main__':
                         help="If using the mocked producer, enable Celery for tasks.")
     parser.add_argument('--total-images', type=int, default=200,
                         help="How many frames to produce for each camera (mocked producer only).")
+    parser.add_argument('--test', type=str,
+                        help="Id of the test")
 
     # Parse command line arguments
     args = parser.parse_args()
@@ -42,7 +45,7 @@ if __name__ == '__main__':
         camera_info = {"id": f"Mock{camera}", "url": None}
         thread = Thread(
             target=produce_mocked,
-            args=(camera_info, args.use_celery, args.total_images)
+            args=(camera_info,args.test,args.use_celery, args.total_images)
         )
 
         # Start the producer thread
