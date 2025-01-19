@@ -1,7 +1,9 @@
 import json
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
+load_dotenv()
 ROOT_DIR = Path(__file__).parent
 
 with open(ROOT_DIR / '.cameras_config.json', 'r') as f:

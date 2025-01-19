@@ -10,7 +10,7 @@ def produce(camera):
     producer = Producer(camera['id'], camera['url'])
     producer.start()
 
-def produce_mocked(camera, test_id,use_celery=True, total_images=200):
+def produce_mocked(camera, test_id,use_celery=True, total_images=3000,fps=10):
     """
     This function uses the MockedProducer.
     """
@@ -20,6 +20,7 @@ def produce_mocked(camera, test_id,use_celery=True, total_images=200):
         use_celery=use_celery,
         total_images=total_images,
         test_id=test_id,
+        fps=fps,
     )
     producer.start()
 

@@ -41,6 +41,6 @@ def analyze_frame(id: str, analyses: List[str], frame: str, test_id: str,task_cr
     path = TIMINGS_PATH / test_id
 
     path.mkdir(parents=True, exist_ok=True)
-    with open(path / f"{str(current_process().index)}.txt","a") as f:
+    with open(path / f"{str(current_process().index)}.timings","a") as f:
         f.write(f"{(datetime.datetime.now() - datetime.datetime.fromtimestamp(task_created)).microseconds}\n")
     return frame

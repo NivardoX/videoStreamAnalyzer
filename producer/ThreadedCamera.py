@@ -11,7 +11,6 @@ class ThreadedCamera(object):
         self.frame = None
 
         self.capture = cv2.VideoCapture(source)
-        print(source)
         self.thread = Thread(target=self.update, args=())
         self.thread.daemon = True
         self.thread.start()
