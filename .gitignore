@@ -1,3 +1,5 @@
 .env
 .cameras_config.json
 /consumer/alerts
+/consumer/timings
+

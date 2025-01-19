@@ -16,10 +16,12 @@ timings = {}
 @celery.task
 def analyze_frame(id: str, analyses: List[str], frame: str, test_id: str,task_created:float) -> None:
     image_64_decoded = base64.decodebytes(frame.encode())
+    created_at = datetime.datetime.fromtimestamp(task_created)
+    print(f"This task was created at {created_at} now is {datetime.datetime.now()}")
     for analysis in analyses:
         for i in range(1_000_000):
             pass
-
+        taskend = datetime.datetime.now()
         if AnalysisFunctions[analysis](image_64_decoded):
             try:
                 services.camera_service.create_camera_if_not_exists(id, "camera" + str(id))
@@ -42,5 +44,5 @@ def analyze_frame(id: str, analyses: List[str], frame: str, test_id: str,task_cr
 
     path.mkdir(parents=True, exist_ok=True)
     with open(path / f"{str(current_process().index)}.timings","a") as f:
-        f.write(f"{(datetime.datetime.now() - datetime.datetime.fromtimestamp(task_created)).microseconds}\n")
+        f.write(f"{int((taskend - datetime.datetime.fromtimestamp(task_created)).total_seconds() * 1000)}\n")
     return frame
