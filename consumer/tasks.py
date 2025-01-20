@@ -17,7 +17,6 @@ timings = {}
 def analyze_frame(id: str, analyses: List[str], frame: str, test_id: str,task_created:float) -> None:
     image_64_decoded = base64.decodebytes(frame.encode())
     created_at = datetime.datetime.fromtimestamp(task_created)
-    print(f"This task was created at {created_at} now is {datetime.datetime.now()}")
     for analysis in analyses:
         for i in range(1_000_000):
             pass
